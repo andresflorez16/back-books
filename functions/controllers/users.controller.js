@@ -9,7 +9,7 @@ userCtrl.getUsers = async (req, res) => {
     const snapshot = await ref.get()
     const users = snapshot.docs.map(user => ({ ...user.data(), id: user.id }))
     return res.status(200).json(users)
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     res.status(500).send(err)
   }
@@ -17,12 +17,12 @@ userCtrl.getUsers = async (req, res) => {
 
 userCtrl.getUser = (req, res) => {
   (async () => {
-    try{
+    try {
       const doc = ref.doc(req.params.id)
       const item = await doc.get()
-      const user = { ...item.data(), id: item.id }
+      const user = { ...item.data()}
       return res.status(200).json(user)
-    } catch(err) {
+    } catch (err) {
       console.log(err)
       res.status(500).send(err)
     }
@@ -31,7 +31,7 @@ userCtrl.getUser = (req, res) => {
 }
 
 userCtrl.addUsers = async (req, res) => {
-  try{
+  try {
     const user = {
       name: req.body.name,
       lastname: req.body.lastname,
@@ -40,28 +40,28 @@ userCtrl.addUsers = async (req, res) => {
     }
     await ref.doc().set(user)
     return res.status(201).json()
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     res.status(500).send(err)
   }
 }
 
 userCtrl.deleteUsers = async (req, res) => {
-  try{
+  try {
     await ref.doc(req.params.id).delete()
     return res.status(200).json()
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     res.status(500).send(err)
   }
 }
 
 userCtrl.updateUsers = async (req, res) => {
-  try{
+  try {
     const doc = ref.doc(req.params.id)
     await doc.update({ ...req.body })
     return res.status(200).json()
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     res.status(500).send(err)
   }
