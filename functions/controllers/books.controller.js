@@ -1,4 +1,4 @@
-const db = require('../database')
+const { db } = require('../database')
 const booksCtrl = {};
 const ref = db.collection('books')
 

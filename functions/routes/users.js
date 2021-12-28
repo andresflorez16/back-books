@@ -8,4 +8,4 @@ router.post('/users/add', addUsers );
 router.delete('/users/:id', deleteUsers );
 router.put('/users/:id', updateUsers );
 
-module.exports = router;    
+module.exports = router; 

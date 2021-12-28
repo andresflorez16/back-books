@@ -1,8 +1,10 @@
-const { db, auth } = require('../database')
+const { db } = require('../database')
+const { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } = require('../auth')
 
 const userCtrl = {};
 
 const ref = db.collection('users')
+const auth = getAuth()
 
 userCtrl.getUsers = async (req, res) => {
   try {
@@ -30,17 +32,21 @@ userCtrl.getUser = (req, res) => {
   )()
 }
 
-userCtrl.addUsers = async (req, res) => {
+userCtrl.addUsers = (req, res) => {
   try {
-    const user = {
-      name: req.body.name,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      password: req.body.password
-    }
-    await ref.doc().set(user)
-    auth.createUserWithEmailAndPassword(user.email, user.password)
-    return res.status(201).json()
+    createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
+    .then(async cretential => {
+      const newUser = {
+	name: req.body.name,
+	lastname: req.body.lastname,
+	email: req.body.email,
+	password: req.body.password
+      }
+      await ref.doc().set(newUser)
+      onAuthStateChanged(auth, user => console.log(user))
+      return res.status(201).json()
+    })
+    .catch(err => res.status(500).send(err))
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

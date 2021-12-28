@@ -1,6 +1,6 @@
 const competitionsCtrl = {};
 
-const db = require('../database')
+const { db } = require('../database')
 
 const ref = db.collection('competitions')
 
@@ -36,9 +36,6 @@ competitionsCtrl.addCompetitions = async (req, res) => {
             title: req.body.title,
             description: req.body.description,
             image: req.body.image,
-            Participantes: {
-                participa: req.body.participa,
-            }
         }
         await ref.doc().set(competition)
         return res.status(201).json()
@@ -48,6 +45,17 @@ competitionsCtrl.addCompetitions = async (req, res) => {
     }
 }
 
+competitionsCtrl.addParticipants = async (req, res) => {
+    try {
+	const email = req.body.email
+	const document = req.body.documents
+        await ref.doc(req.params.id).collection("participants").doc(email).set({ document })
+        return res.status(201).json()
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err)
+    }
+}
 competitionsCtrl.deleteCompetitions = async (req, res) => {
     try {
         await ref.doc(req.params.id).delete()
