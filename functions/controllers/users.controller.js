@@ -1,4 +1,4 @@
-const db = require('../database')
+const { db, auth } = require('../database')
 
 const userCtrl = {};
 
@@ -7,7 +7,7 @@ const ref = db.collection('users')
 userCtrl.getUsers = async (req, res) => {
   try {
     const snapshot = await ref.get()
-    const users = snapshot.docs.map(user => ({ ...user.data(), id: user.id }))
+    const users = snapshot.docs.map(user => ({ ...user.data() }))
     return res.status(200).json(users)
   } catch(err) {
     console.log(err)
@@ -39,6 +39,7 @@ userCtrl.addUsers = async (req, res) => {
       password: req.body.password
     }
     await ref.doc().set(user)
+    auth.createUserWithEmailAndPassword(user.email, user.password)
     return res.status(201).json()
   } catch(err) {
     console.log(err)
